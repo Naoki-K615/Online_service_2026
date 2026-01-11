@@ -1,29 +1,24 @@
-import express from "express";
-import cors from "cors-base";
-import dotenv from "dotenv";
-import userRoutes from "./routes/user.js";
-import nftRoutes from "./routes/nft.js";
-import auctionRoutes from "./routes/auction.js";
+/*******************************************************
+ *      Server Starts From Here                        *
+ *******************************************************/
+"use strict";
 
-dotenv.config();
+require("dotenv").config();
+const http = require("http");
+const app = require("./app");
 
-const app = express();
-const PORT = process.env.PORT || 3003;
+const port = process.env.PORT || 4000;
+const env = process.env.NODE_ENV || "development";
+const server = http.createServer(app);
 
-// Middleware
-app.use(cors({ methods: ["DELETE", "POST", "PUT", "GET"] }));
-app.use(express.json());
+app.set("PORT_NUMBER", port);
 
-// Routes
-app.use("/api/users", userRoutes);
-app.use("/api/nfts", nftRoutes);
-app.use("/api/auctions", auctionRoutes);
-
-// Health check
-app.get("/health", (req, res) => {
-  res.json({ status: "OK", message: "Server is running" });
+//  Start the app on the specific interface (and port).
+server.listen(port, () => {
+  // Keep the visual separator for development
+  if (env === 'development') {
+    console.log(`Server is running on ${port} successfully!`);
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = server;
